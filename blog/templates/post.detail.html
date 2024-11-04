@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content|safe }}</p>
+    <p>Publicado em: {{ post.created_at|date:"d/m/Y H:i" }}</p>
+
+    <h2>Comentários</h2>
+    <ul>
+        {% for comment in post.comments.all|dictsort:"-created_at" %}
+            <li>
+                <strong>{{ comment.author.username|default:"Anônimo" }}</strong> - {{ comment.created_at|date:"d/m/Y H:i" }}:
+                <p>{{ comment.text }}</p>
+            </li>
+        {% empty %}
+            <li>Não há comentários ainda.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Adicionar um comentário</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <textarea name="text" required></textarea><br>
+        <button type="submit">Comentar</button>
+    </form>
+
+    <a href="{% url 'post_list' %}">Voltar para a lista de posts</a>
+</body>
+</html>
