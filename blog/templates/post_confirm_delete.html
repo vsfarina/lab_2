@@ -1,0 +1,7 @@
+<h1>Remover</h1>
+<p>Você quer remover? "{{ post.title }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sim</button>
+    <a href="{% url 'post_list' %}">Não</a>
+</form>
