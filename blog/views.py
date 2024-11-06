@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect 
-from .models import Post, Comment
+from .models import Post, Comment, Category
 from .forms import PostForm
 from django.urls import reverse
 
@@ -46,3 +46,12 @@ def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.delete()
     return redirect(reverse('post_list'))
+
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'blog/category_list.html', {'categories': categories})
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)  
+    return render(request, 'blog/category_detail.html', {'category': category, 'posts': posts})
