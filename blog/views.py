@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment, Category
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.contrib.auth.models import User
+
 def post_list(request):
     posts = Post.objects.all() 
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    comments = Comment.objects.filter(post=post)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -21,7 +23,8 @@ def post_detail(request, pk):
             return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
-    return render(request, 'blog/post_detail.html', {'post': post, 'form': form})
+    return render(request, 'blog/post_detail.html', {'post': post, 'form': form, 'comments': comments})
+
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -32,7 +35,7 @@ def post_new(request):
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
-    return render(request, 'blog/post_form2.html', {'form': form})
+    return render(request, 'blog/post_form.html', {'form': form})
 
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -44,29 +47,6 @@ def post_edit(request, pk):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/post_form.html', {'form': form})
-
-from .forms import CommentForm
-
-def add_comment(request, post_pk):
-    post = get_object_or_404(Post, pk=post_pk)
-
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            if request.user.is_authenticated:
-                comment.author = request.user  
-            else:
-                anonymous_user = User.objects.get(username="Anonymous")
-                comment.author = anonymous_user  
-            comment.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-
-    comments = post.comments.all()
-    return render(request, 'blog/post_detail.html', {'post': post, 'form': form, 'comments': comments})
 
 def post_delete_confirm(request, pk):
     post = get_object_or_404(Post, pk=pk)
