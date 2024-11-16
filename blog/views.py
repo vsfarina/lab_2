@@ -57,7 +57,7 @@ def add_comment(request, post_pk):
             if request.user.is_authenticated:
                 comment.author = request.user  
             else:
-                anonymous_user = User.objects.get(username="Anonimo")
+                anonymous_user = User.objects.get(username="Anonymous")
                 comment.author = anonymous_user  
             comment.save()
             return redirect('post_detail', pk=post.pk)
