@@ -54,7 +54,11 @@ def add_comment(request, post_pk):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.author = request.user
+            if request.user.is_authenticated:
+                comment.author = request.user  
+            else:
+                anonymous_user = User.objects.get(username="Anonimo")
+                comment.author = anonymous_user  
             comment.save()
             return redirect('post_detail', pk=post.pk)
     else:
