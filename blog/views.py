@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment, Category
 from .forms import PostForm
-from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User
 def post_list(request):
     posts = Post.objects.all() 
     return render(request, 'blog/post_list.html', {'posts': posts})
