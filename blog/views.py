@@ -9,18 +9,20 @@ def post_list(request):
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    comments = post.comments.all()
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
+            if request.user.is_authenticated:
+                comment.author = request.user
+            else:
+                comment.author = User.objects.get(username="Anonymous")
             comment.post = post
-            comment.author = request.user
             comment.save()
             return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
-    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form': form})
+    return render(request, 'blog/post_detail.html', {'post': post, 'form': form})
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
