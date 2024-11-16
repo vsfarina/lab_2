@@ -1,0 +1,8 @@
+<h1>Posts na categoria {{ category.name }}</h1>
+<ul>
+    {% for post in posts %}
+        <li>{{ post.title }}</li>
+    {% empty %}
+        <li>Não há posts nesta categoria.</li>
+    {% endfor %}
+</ul>

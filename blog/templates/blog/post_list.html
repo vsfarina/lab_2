@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block title %}Lista de Posts{% endblock %}
 
 {% block content %}
@@ -7,10 +8,14 @@
         {% for post in posts %}
             <li>
                 <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h3>
-                <a href="{% url 'post_edit' post.pk %}">Editar</a>
-                <a href="{% url 'post_delete' post.pk %}">Remover</a>
+                <p>{{ post.content|truncatewords:20 }}</p> 
+                <a href="{% url 'post_edit' post.pk %}">Editar</a> | 
+                <a href="{% url 'post_delete_confirm' post.pk %}">Excluir</a>
             </li>
+        {% empty %}
+            <li>Nenhum post encontrado.</li>
         {% endfor %}
     </ul>
+
     <a href="{% url 'post_new' %}">Novo Post</a>
 {% endblock %}
